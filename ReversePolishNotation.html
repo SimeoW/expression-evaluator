@@ -1,0 +1,312 @@
+<html>
+	<style>
+		body {
+			padding: 100px;
+			background-color: #333;
+		}
+		div {
+			border-radius: 30px;
+			overflow: hidden;
+		}
+		textarea {
+			width: 100%;
+			height: 33%;
+			background-color: #555;
+			color: #fff;
+			padding: 50px;
+			border: none;
+			resize: none;
+			outline: 0;
+		}
+		#infix {
+			background-color: #666;
+		}
+		.rotated {
+			position: fixed;
+			font-family: Arial;
+			font-size: 20px;
+			color: #777;
+			margin-top: 150px;
+			margin-left: -25px;
+			transform-origin: top left;
+			transform: rotate(-90deg);
+		}
+	</style>
+	<div>
+		<p class='rotated'>INFIX</p>
+		<textarea id='infix' oninput='update()'>2 * sq(123 - 234) << 36 % 17
+
+11 + 88 / (5 * 123) + 10 * 5
+
+-(1+2)*3+1
+</textarea>
+		<p class='rotated'>POSTFIX</p>
+		<textarea id='postfix' readonly></textarea>
+		<p class='rotated'>EVALUATED</p>
+		<textarea id='evaluated' readonly></textarea>
+	</div>
+	<script>
+		function update() { //11 88 5 123 * / + 10 5 * +
+			let infix = document.getElementById('infix').value;
+			let postfix = toPostFix(infix);
+			let evaluated = evaluate(postfix);
+
+			document.getElementById('postfix').value = postfix.join('\n');
+			document.getElementById('evaluated').value = evaluated;
+		}
+
+		function toPostFix(infix) {
+			console.clear()
+			let lines = infix.split('\n')
+			let output = [], tokens = [];
+			for(line of lines) {
+				line = line.replace(/(^|[^0-9A-z\)\]\s]\s*)\-/g, '$1-u');
+				line = line.replace(/(^|[^0-9A-z\)\]\s]\s*)\+/g, '$1+u');
+				tokens = line.match(/[0-9]+|\-u|\+u|sq|abs|min|max|<<<|>>>|==|!=|&&|\^\^|\|\||<<|>>|\<|\>|\(|\)|\[|\]|\-|\+|\~|\!|\*|\/|\%/g) || [];
+				if(tokens.join('').length != line.replace(/\s/g, '').length) {
+					tokens = ['ERROR: unknown token was found.'];
+				}
+				tokens = shuntingYard(tokens);
+				output.push(tokens.join(', '));
+			}
+			return output;
+		}
+
+		function shuntingYard(tokens) { // 2,123,234, –,sq,*,36,17,%,<< 
+			if(tokens.length == 1 && tokens[0].startsWith('ERROR')) return tokens;
+			let operators = { // [PRECEDENCE, IS_LEFT_ASSOCIATIVE]
+				//'(': [14, true], ')': [14, true], '[': [14, true], ']': [14, true],
+				'-u': [13, true], '+u': [13, true], '~': [13, true], '!': [13, true],
+				//'^^': [3, false],
+				'*': [12, true], '/': [12, true], '%': [12, true],
+				'-': [11, true], '+': [11, true],
+				'<<': [10, true], '>>': [10, true], '<<<': [10, true], '>>>': [10, true],
+				'<': [9, true], '>': [9, true], '<=': [9, true], '>=': [9, true],
+				'==': [8, true], '!=': [8, true],
+				'&': [7, true],
+				'^': [6, true],
+				'|': [5, true],
+				'&&': [4, true],
+				'^^': [2, false],
+				'||': [1, true],
+			}
+			let outputQueue = [];
+			let operatorStack = [];
+			for(token of tokens) {
+				if(token.match(/[0-9]+/) !== null) { // Number
+					outputQueue.push(token);
+				} else if(token.match(/[A-z]+/) !== null) { // Function
+					operatorStack.push(token);
+				} else if(operators[token] !== undefined) { // Operator
+					let top = operatorStack[operatorStack.length - 1];
+					while(operators[top] !== undefined && (
+						(operators[top][1] == true && operators[token][0] <= operators[top][0]) ||
+						(operators[token][1] == false && operators[token][0] < operators[top][0]))) {
+						outputQueue.push(operatorStack.pop());
+						top = operatorStack[operatorStack.length - 1];
+					}
+					operatorStack.push(token);
+				} else if(token == '(') {
+					operatorStack.push(token);
+				} else if(token == ')') {
+					while(operatorStack.length > 0 && operatorStack[operatorStack.length - 1] != '(') {
+						outputQueue.push(operatorStack.pop());
+					}
+					if(operatorStack.length == 0) {
+						outputQueue = [];
+						operatorStack = ['ERROR: missing opening parentheses'];
+						break;
+					}
+					operatorStack.pop(); // Pop (
+				} else if(token == '[') {
+					operatorStack.push(token);
+				} else if(token == ']') {
+					while(operatorStack.length > 0 && operatorStack[operatorStack.length - 1] != '[') {
+						outputQueue.push(operatorStack.pop());
+					}
+					if(operatorStack.length == 0) {
+						outputQueue = [];
+						operatorStack = ['ERROR: missing square bracket.'];
+						break;
+					}
+					operatorStack.pop(); // Pop [
+				}
+				//console.log(token + ':\t' + outputQueue.join(' ') + '\n\t' + operatorStack.join(' '))
+			}
+			while(operatorStack.length > 0) {
+				outputQueue.push(operatorStack.pop());
+			}
+			return outputQueue;
+		}
+
+		function evaluate(lines) {
+			let output = [];
+			for(line of lines) {
+				tokens = line.split(', ');
+				if(tokens.length == 1 && tokens[0].startsWith('ERROR')) {
+					output.push(tokens);
+					continue
+				}
+				let stack = [];
+				for(token of tokens) {
+					let num, n1, n2;
+
+					if(token == '') {
+					} else if(token.match(/[0-9]+/) !== null) { // Number
+						num = parseInt(token);
+						while(num > 32767) num -= 65536;
+						while(num < -32768) num += 65536;
+						stack.push(num);
+
+					} else if(token == '-u' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
+						num = -stack.pop()
+						while(num > 32767) num -= 65536;
+						while(num < -32768) num += 65536;
+						stack.push(num);
+
+					} else if(token == '+u' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
+						stack.push(stack.pop());
+
+					} else if(token == '*' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = n2 * n1;
+						while(num > 32767) num -= 65536;
+						while(num < -32768) num += 65536;
+						stack.push(num);
+
+					} else if(token == '/' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = Math.floor(n2 / n1);
+						while(num > 32767) num -= 65536;
+						while(num < -32768) num += 65536;
+						stack.push(num);
+
+					} else if(token == '%' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = n2 % n1;
+						while(num > 32767) num -= 65536;
+						while(num < -32768) num += 65536;
+						stack.push(num);
+
+					} else if(token == '-' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = n2 - n1;
+						while(num > 32767) num -= 65536;
+						while(num < -32768) num += 65536;
+						stack.push(num);
+
+					} else if(token == '+' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						num = stack.pop() + stack.pop();
+						while(num > 32767) num -= 65536;
+						while(num < -32768) num += 65536;
+						stack.push(num);
+
+					} else if(token == '<<' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = n2 << n1;
+						while(num > 32767) num -= 65536;
+						while(num < -32768) num += 65536;
+						stack.push(num);
+
+					} else if(token == '>>' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = n2 >> n1;
+						while(num > 32767) num -= 65536;
+						while(num < -32768) num += 65536;
+						stack.push(num);
+
+					} else if(token == '<<<' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = n2 << n1;
+						while(num > 32767) num -= 65536;
+						while(num < -32768) num += 65536;
+						stack.push(num);
+
+					} else if(token == '>>>' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = n2 >> n1;
+						while(num > 32767) num -= 65536;
+						while(num < -32768) num += 65536;
+						stack.push(num);
+
+					} else if(token == '<' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						stack.push(stack.pop() > stack.pop() ? -1 : 0);
+
+					} else if(token == '>' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						stack.push(stack.pop() < stack.pop() ? -1 : 0);
+
+					} else if(token == '<=' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						stack.push(stack.pop() >= stack.pop() ? -1 : 0);
+
+					} else if(token == '>=' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						stack.push(stack.pop() <= stack.pop() ? -1 : 0);
+
+					} else if(token == '==' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						stack.push(stack.pop() == stack.pop() ? -1 : 0);
+
+					} else if(token == '!=' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						stack.push(stack.pop() == stack.pop() ? -1 : 0);
+
+					} else if(token == '&' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						stack.push(stack.pop() & stack.pop());
+
+					} else if(token == '^' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						stack.push(stack.pop() ^ stack.pop());
+
+					} else if(token == '|' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						stack.push(stack.pop() | stack.pop());
+
+					} else if(token == '&&' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						stack.push(stack.pop() && stack.pop() ? -1 : 0);
+
+					} else if(token == '^^' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						n1 = stack.pop();
+						n2 = stack.pop();
+						stack.push(n2 ** n1);
+
+					} else if(token == '||' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						stack.push(stack.pop() || stack.pop() ? -1 : 0);
+
+					} else if(token == 'sq' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
+						stack.push(stack.pop() ** 2);
+
+					} else if(token == 'abs' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
+						num = Math.abs(stack.pop());
+						while(num > 32767) num -= 65536;
+						while(num < -32768) num += 65536;
+						stack.push(num);
+
+					} else if(token == 'min' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						stack.push(Math.min(stack.pop(), stack.pop()));
+
+					} else if(token == 'max' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						stack.push(Math.max(stack.pop(), stack.pop()));
+
+					} else if(token == '(') {
+						stack = ['ERROR: missing closing parentheses.'];
+						break;
+					} else if(token == '[') {
+						stack = ['ERROR: missing closing square bracket.'];
+						break;
+					}
+				}
+				if(stack.length > 1) {
+					output.push('ERROR: more than one output (' + stack.toString() + ').')
+				} else {
+					output.push(stack.toString())
+				}
+			}
+			return output.join('\n');
+		}
+
+		update();
+	</script>
+</html>
