@@ -1,45 +1,95 @@
 <html>
 	<style>
 		body {
-			padding: 100px;
 			background-color: #333;
+			font-family: Arial;
+			font-size: 20px;
+			margin: 0 auto;
+			max-width: 800px;
+			padding: 10px 10px;
 		}
-		div {
+		.wrapper {
 			border-radius: 30px;
 			overflow: hidden;
 		}
 		textarea {
-			width: 100%;
-			height: 33%;
 			background-color: #555;
-			color: #fff;
-			padding: 50px;
 			border: none;
-			resize: none;
+			color: #fff;
+			font-family: Arial;
+			height: 33%;
 			outline: 0;
+			padding: 30px 50px;
+			resize: none;
+			width: 100%;
 		}
 		#infix {
 			background-color: #666;
 		}
+		.helpWrapper {
+			border-top-right-radius: 30px;
+			height: calc(33% - 7px);
+			margin: 0 auto;
+			max-width: 800px;
+			overflow: hidden;
+			padding: 0;
+			pointer-events: none;
+			position: absolute;
+			width: 100%;
+		}
+		#help {
+			background-color: #5d5d5d;
+			color: #fff;
+			float: right;
+			height: 100%;
+			padding: 30px 30px;
+			pointer-events: default;
+			width: 300px;
+		}
 		.rotated {
-			position: fixed;
-			font-family: Arial;
-			font-size: 20px;
 			color: #777;
-			margin-top: 150px;
 			margin-left: -25px;
+			margin-top: 150px;
+			position: fixed;
 			transform-origin: top left;
 			transform: rotate(-90deg);
 		}
 	</style>
-	<div>
+	<div class='wrapper'>
+		<div class='helpWrapper'>
+			<textarea id='help' readonly>Supported operators:
+
+( ) [ ] - + ~ !
+* / % - + <<
+>> <<< >>>
+< > <= >= &
+| == != ^ &&
+^^ ||
+
+Supported functions:
+
+sq(x): Square a number
+abs(x): Absolute value of a number
+min(x, y): Minimum of two values
+max(x, y): Maximum of two values</textarea>
+		</div>
 		<p class='rotated'>INFIX</p>
-		<textarea id='infix' oninput='update()'>2 * sq(123 - 234) << 36 % 17
-
-11 + 88 / (5 * 123) + 10 * 5
-
--(1+2)*3+1
-</textarea>
+		<textarea id='infix' oninput='update()'>(2 * sq(123 - 234) << 36 % 17) + 32503
+-1+2*3/4+5- -6/(7+8)*9 == 14
+-43-(1-2-3-4-5-6-7-8-9) == 0
+-(1+2)*3 == -9
+100%80%7+10/4/5 == 6
+-2--1 == -1
+2*(2+2)*2 == 16
+1<2
+1<=1
+2>1
+1>=1
+1==1
+2!=1
+2^^1
+(1<<1) == 2
+(2>>1) == 1</textarea>
 		<p class='rotated'>POSTFIX</p>
 		<textarea id='postfix' readonly></textarea>
 		<p class='rotated'>EVALUATED</p>
@@ -56,13 +106,12 @@
 		}
 
 		function toPostFix(infix) {
-			console.clear()
 			let lines = infix.split('\n')
 			let output = [], tokens = [];
 			for(line of lines) {
 				line = line.replace(/(^|[^0-9A-z\)\]\s]\s*)\-/g, '$1-u');
 				line = line.replace(/(^|[^0-9A-z\)\]\s]\s*)\+/g, '$1+u');
-				tokens = line.match(/[0-9]+|\-u|\+u|sq|abs|min|max|<<<|>>>|==|!=|&&|\^\^|\|\||<<|>>|\<|\>|\(|\)|\[|\]|\-|\+|\~|\!|\*|\/|\%/g) || [];
+				tokens = line.match(/[0-9]+|\-u|\+u|sq|abs|min|max|<<<|>>>|==|!=|&&|\^\^|\|\||<<|>>|\<=|\>=|\<|\>|\(|\)|\[|\]|\-|\+|\~|\!|\*|\/|\%/g) || [];
 				if(tokens.join('').length != line.replace(/\s/g, '').length) {
 					tokens = ['ERROR: unknown token was found.'];
 				}
@@ -76,11 +125,11 @@
 			if(tokens.length == 1 && tokens[0].startsWith('ERROR')) return tokens;
 			let operators = { // [PRECEDENCE, IS_LEFT_ASSOCIATIVE]
 				//'(': [14, true], ')': [14, true], '[': [14, true], ']': [14, true],
+				'sq': [14, true], 'abs': [14, true], 'min': [14, true], 'max': [14, true],
 				'-u': [13, true], '+u': [13, true], '~': [13, true], '!': [13, true],
-				//'^^': [3, false],
 				'*': [12, true], '/': [12, true], '%': [12, true],
 				'-': [11, true], '+': [11, true],
-				'<<': [10, true], '>>': [10, true], '<<<': [10, true], '>>>': [10, true],
+				'<<': [10, false], '>>': [10, true], '<<<': [10, true], '>>>': [10, true],
 				'<': [9, true], '>': [9, true], '<=': [9, true], '>=': [9, true],
 				'==': [8, true], '!=': [8, true],
 				'&': [7, true],
@@ -90,53 +139,52 @@
 				'^^': [2, false],
 				'||': [1, true],
 			}
-			let outputQueue = [];
-			let operatorStack = [];
+			let output = [];
+			let stack = [];
 			for(token of tokens) {
 				if(token.match(/[0-9]+/) !== null) { // Number
-					outputQueue.push(token);
-				} else if(token.match(/[A-z]+/) !== null) { // Function
-					operatorStack.push(token);
+					output.push(token);
+				} else if(token.match(/[A-z]+/) !== null && !'[]'.includes(token)) { // Function
+					stack.push(token);
 				} else if(operators[token] !== undefined) { // Operator
-					let top = operatorStack[operatorStack.length - 1];
+					let top = stack[stack.length - 1];
 					while(operators[top] !== undefined && (
 						(operators[top][1] == true && operators[token][0] <= operators[top][0]) ||
 						(operators[token][1] == false && operators[token][0] < operators[top][0]))) {
-						outputQueue.push(operatorStack.pop());
-						top = operatorStack[operatorStack.length - 1];
+						output.push(stack.pop());
+						top = stack[stack.length - 1];
 					}
-					operatorStack.push(token);
+					stack.push(token);
 				} else if(token == '(') {
-					operatorStack.push(token);
-				} else if(token == ')') {
-					while(operatorStack.length > 0 && operatorStack[operatorStack.length - 1] != '(') {
-						outputQueue.push(operatorStack.pop());
-					}
-					if(operatorStack.length == 0) {
-						outputQueue = [];
-						operatorStack = ['ERROR: missing opening parentheses'];
-						break;
-					}
-					operatorStack.pop(); // Pop (
+					stack.push(token);
 				} else if(token == '[') {
-					operatorStack.push(token);
-				} else if(token == ']') {
-					while(operatorStack.length > 0 && operatorStack[operatorStack.length - 1] != '[') {
-						outputQueue.push(operatorStack.pop());
+					stack.push(token);
+				} else if(token == ')') {
+					while(stack.length > 0 && stack[stack.length - 1] != '(') {
+						output.push(stack.pop());
 					}
-					if(operatorStack.length == 0) {
-						outputQueue = [];
-						operatorStack = ['ERROR: missing square bracket.'];
+					if(stack.length == 0) {
+						output = [];
+						stack = ['ERROR: missing opening parentheses.'];
 						break;
 					}
-					operatorStack.pop(); // Pop [
+					stack.pop(); // Pop (
+				} else if(token == ']') {
+					while(stack.length > 0 && stack[stack.length - 1] != '[') {
+						output.push(stack.pop());
+					}
+					if(stack.length == 0) {
+						output = [];
+						stack = ['ERROR: missing square bracket.'];
+						break;
+					}
+					stack.pop(); // Pop [
 				}
-				//console.log(token + ':\t' + outputQueue.join(' ') + '\n\t' + operatorStack.join(' '))
 			}
-			while(operatorStack.length > 0) {
-				outputQueue.push(operatorStack.pop());
+			while(stack.length > 0) {
+				output.push(stack.pop());
 			}
-			return outputQueue;
+			return output;
 		}
 
 		function evaluate(lines) {
@@ -164,8 +212,14 @@
 						while(num < -32768) num += 65536;
 						stack.push(num);
 
-					} else if(token == '+u' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
-						stack.push(stack.pop());
+					} else if(token == '~' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
+						num = ~stack.pop();
+						while(num > 32767) num -= 65536;
+						while(num < -32768) num += 65536;
+						stack.push(num);
+
+					} else if(token == '!' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
+						stack.push(!stack.pop() ? -1 : 0);
 
 					} else if(token == '*' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						n1 = stack.pop();
@@ -253,7 +307,7 @@
 						stack.push(stack.pop() == stack.pop() ? -1 : 0);
 
 					} else if(token == '!=' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						stack.push(stack.pop() == stack.pop() ? -1 : 0);
+						stack.push(stack.pop() != stack.pop() ? -1 : 0);
 
 					} else if(token == '&' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						stack.push(stack.pop() & stack.pop());
@@ -268,15 +322,16 @@
 						stack.push(stack.pop() && stack.pop() ? -1 : 0);
 
 					} else if(token == '^^' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						n1 = stack.pop();
-						n2 = stack.pop();
-						stack.push(n2 ** n1);
+						stack.push(stack.pop() ^ stack.pop() ? -1 : 0);
 
 					} else if(token == '||' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						stack.push(stack.pop() || stack.pop() ? -1 : 0);
 
 					} else if(token == 'sq' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
-						stack.push(stack.pop() ** 2);
+						num = stack.pop() ** 2;
+						while(num > 32767) num -= 65536;
+						while(num < -32768) num += 65536;
+						stack.push(num);
 
 					} else if(token == 'abs' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
 						num = Math.abs(stack.pop());
@@ -295,6 +350,9 @@
 						break;
 					} else if(token == '[') {
 						stack = ['ERROR: missing closing square bracket.'];
+						break;
+					} else {
+						stack = ['ERROR: token "' + token + '" has incorrect number of operands.'];
 						break;
 					}
 				}
