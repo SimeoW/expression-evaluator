@@ -74,22 +74,277 @@ min(x, y): Minimum of two values
 max(x, y): Maximum of two values</textarea>
 		</div>
 		<p class='rotated'>INFIX</p>
-		<textarea id='infix' oninput='update()'>(2 * sq(123 - 234) << 36 % 17) + 32503
--1+2*3/4+5- -6/(7+8)*9 == 14
--43-(1-2-3-4-5-6-7-8-9) == 0
--(1+2)*3 == -9
-100%80%7+10/4/5 == 6
--2--1 == -1
-2*(2+2)*2 == 16
-1<2
-1<=1
-2>1
-1>=1
-1==1
-2!=1
-2^^1
-(1<<1) == 2
-(2>>1) == 1</textarea>
+		<textarea id='infix' oninput='update()'>42
+42 * 42
+42 / 42
+42 % 42
+42 - 42
+42 + 42
+42 << 1
+42 >> 1
+42 <<< 1
+42 >>> 1
+42 < 42
+42 <= 42
+42 > 42
+42 >= 42
+42 == 42
+42 != 42
+42 & 42
+42 ^ 42
+42 | 42
+42 && 42
+42 ^^ 42
+42 || 42
+-42
++42
+~42
+!42
+42 * 0
+42 * 1
+255 * 255
+256 * 256
+257 * 257
+42 / 42
+84 / 2
+42 / 1
+1 / 42
+0 / 42
+41 / 42
+42 / 41
+42 % 42
+84 % 2
+42 % 1
+1 % 42
+0 % 42
+41 % 42
+42 % 41
+42 - 42
+42 - 0
+0 - 42
+32767 + 1
+32767 + 2
+0 << 1
+1 << 0
+1 << 1
+1 << 2
+1 << 3
+1 << 4
+1 << 5
+1 << 6
+1 << 7
+1 << 8
+1 << 10
+1 << 11
+1 << 12
+1 << 13
+1 << 14
+1 << 15
+1 << 16
+1 << 17
+1 << 18
+1 << 20
+0 >> 1
+16384 >> 0
+16384 >> 1
+16384 >> 2
+16384 >> 3
+16384 >> 4
+16384 >> 5
+16384 >> 6
+16384 >> 7
+16384 >> 8
+16384 >> 10
+16384 >> 11
+16384 >> 12
+16384 >> 13
+16384 >> 14
+16384 >> 15
+16384 >> 16
+16384 >> 17
+16384 >> 18
+16384 >> 20
+0 <<< 1
+1 <<< 0
+1 <<< 1
+1 <<< 2
+1 <<< 3
+1 <<< 4
+1 <<< 5
+1 <<< 6
+1 <<< 7
+1 <<< 8
+1 <<< 10
+1 <<< 11
+1 <<< 12
+1 <<< 13
+1 <<< 14
+1 <<< 15
+1 <<< 16
+1 <<< 17
+1 <<< 18
+1 <<< 20
+0 >>> 1
+16384 >>> 0
+16384 >>> 1
+16384 >>> 2
+16384 >>> 3
+16384 >>> 4
+16384 >>> 5
+16384 >>> 6
+16384 >>> 7
+16384 >>> 8
+16384 >>> 10
+16384 >>> 11
+16384 >>> 12
+16384 >>> 13
+16384 >>> 14
+16384 >>> 15
+16384 >>> 16
+16384 >>> 17
+16384 >>> 18
+16384 >>> 20
+42 < 41
+42 < 42
+42 < 43
+42 <= 41
+42 <= 42
+42 <= 43
+42 > 41
+42 > 42
+42 > 43
+42 >= 41
+42 >= 42
+42 >= 43
+0 == 0
+0 == 1
+0 != 0
+0 != 1
+10922 & 21845
+10922 ^ 21845
+10922 | 21845
+10922 && 21845
+10922 ^^ 21845
+10922 || 21845
+0 || 0
+1 || 1
+42 / 6 / 3
+42 % 35 % 5
+42 - 30 - 2
+42 << 1 << 2
+44 >> 1 > 1
+42 <<< 2 <<< 2
+42 >>> 2 >>> 2
+42 < 42 < 42
+42 <= 42 <= 42
+42 > 42 > 42
+42 >= 42 >= 42
+42 == 0 == 0
+42 != 42 == 0
+--42
+++42
+~~42
+!!42
+42 / 42 * 7
+42 % 30 / 3
+42 / 30 % 3 
+42 - 21 + 20
+64 << 4 >> 1
+64 >> 4 << 1
+64 <<< 4 >>> 4
+64 >>> 4 <<< 4
+42 < 42 >= 0
+42 == 42 != 0 
++-42
+~-42
+!-42
+-+42
+~+42
+!+42
++~42
+-~42
+!~42
++!42
+-!42
+~!42
+42 - 7 * 5
+42 << 2 + 1
+42 <= 3 >>> 2
+0 == 42 < 43
+42 & 0 != 0
+43 ^ 42 & 42
+42 | 42 ^ 42
+42 && 0 | 42
+43 ^^ 0 && 0
+42 || 42 ^^ 42
+(42 / 6) / 3
+(42 % 35) % 5
+(42 - 30) - 2
+(42 << 1) << 2
+(44 >> 1) > 1
+(42 <<< 2) <<< 2
+(42 >>> 2) >>> 2
+(42 < 42) < 42
+(42 <= 42) <= 42
+(42 > 42) > 42
+(42 >= 42) >= 42
+(42 == 0) == 0
+(42 != 42) == 0
+42 / (6 / 3)
+42 % (35 % 5)
+42 - (30 - 2)
+42 << (1 << 2)
+44 >> (1 > 1)
+42 <<< (2 <<< 2)
+42 >>> (2 >>> 2)
+42 < (42 < 42)
+42 <= (42 <= 42)
+42 > (42 > 42)
+42 >= (42 >= 42)
+42 == (0 == 0)
+42 != (42 == 0)
+(42 - 7) * 5
+(42 << 2) + 1
+(42 <= 3) >>> 2
+(0 == 42) < 43
+(42 & 0) != 0
+(43 ^ 42) & 42
+(42 | 42) ^ 42
+(42 && 0) | 42
+(43 ^^ 0) && 0
+(42 || 42) ^^ 42
+42 - (7 * 5)
+42 << (2 + 1)
+42 <= (3 >>> 2)
+0 == (42 < 43)
+42 & (0 != 0)
+43 ^ (42 & 42)
+42 | (42 ^ 42)
+42 && (0 | 42)
+43 ^^ (0 && 0)
+42 || (42 ^^ 42)
+~0 - 21845
+-1 << 1
+170 + 32 * ((((((1 << 1) << 2) + (1 << 1)) << 4) + 10)  
+sq(0)
+sq(16)
+sq(-16)
+abs(0)
+abs(32000)
+abs(-32000)
+min(4, 10)
+min(10, 4)
+min(1000, 1000)
+min(-1000, 1000)
+min(1000, -1000)
+max(4, 10)
+max(10, 4)
+max(1000, 1000)
+max(-1000, 1000)
+max(1000, -1000)
+2 * sq(123 - 234) << 36 % 17
+1 + 2 - 3 / 4 % 5 & max(min(sq(10),sq(100)) - abs(sq(10) - sq(max(abs(-49), 30))), 17)
+</textarea>
 		<p class='rotated'>POSTFIX</p>
 		<textarea id='postfix' readonly></textarea>
 		<p class='rotated'>EVALUATED</p>
@@ -109,14 +364,16 @@ max(x, y): Maximum of two values</textarea>
 			let lines = infix.split('\n')
 			let output = [], tokens = [];
 			for(line of lines) {
-				line = line.replace(/(^|[^0-9A-z\)\]\s]\s*)\-/g, '$1-u');
-				line = line.replace(/(^|[^0-9A-z\)\]\s]\s*)\+/g, '$1+u');
-				tokens = line.match(/[0-9]+|\-u|\+u|sq|abs|min|max|<<<|>>>|==|!=|&&|\^\^|\|\||<<|>>|\<=|\>=|\<|\>|\(|\)|\[|\]|\-|\+|\~|\!|\*|\/|\%/g) || [];
+				line = line.replace(/(^|[^0-9A-z\)\]\s]\s*)\-(?!u)/g, '$1-u');
+				line = line.replace(/(^|[^0-9A-z\)\]\s]\s*)\+(?!u)/g, '$1+u');
+				line = line.replace(/(^|[^0-9A-z\)\]\s]\s*)\-(?!u)/g, '$1-u');
+				line = line.replace(/(^|[^0-9A-z\)\]\s]\s*)\+(?!u)/g, '$1+u');
+				tokens = line.match(/[0-9]+|\-u|\+u|sq|abs|min|max|,|<<<|>>>|==|!=|&&|\^\^|\|\||<<|>>|\<=|\>=|\<|\>|\(|\)|\[|\]|\-|\+|\~|\!|\*|\/|\%|\&|\||\^/g) || [];
 				if(tokens.join('').length != line.replace(/\s/g, '').length) {
 					tokens = ['ERROR: unknown token was found.'];
 				}
 				tokens = shuntingYard(tokens);
-				output.push(tokens.join(', '));
+				output.push(tokens.join(','));
 			}
 			return output;
 		}
@@ -126,7 +383,7 @@ max(x, y): Maximum of two values</textarea>
 			let operators = { // [PRECEDENCE, IS_LEFT_ASSOCIATIVE]
 				//'(': [14, true], ')': [14, true], '[': [14, true], ']': [14, true],
 				'sq': [14, true], 'abs': [14, true], 'min': [14, true], 'max': [14, true],
-				'-u': [13, true], '+u': [13, true], '~': [13, true], '!': [13, true],
+				'-u': [13, false], '+u': [13, false], '~': [13, false], '!': [13, false],
 				'*': [12, true], '/': [12, true], '%': [12, true],
 				'-': [11, true], '+': [11, true],
 				'<<': [10, false], '>>': [10, true], '<<<': [10, true], '>>>': [10, true],
@@ -181,6 +438,10 @@ max(x, y): Maximum of two values</textarea>
 					stack.pop(); // Pop [
 				}
 			}
+			/*for(i in stack) { // Convert from unary back to the original + and -
+				if(stack[i] == '+u') stack[i] = '+';
+				if(stack[i] == '-u') stack[i] = '-';
+			}*/
 			while(stack.length > 0) {
 				output.push(stack.pop());
 			}
@@ -190,7 +451,7 @@ max(x, y): Maximum of two values</textarea>
 		function evaluate(lines) {
 			let output = [];
 			for(line of lines) {
-				tokens = line.split(', ');
+				tokens = line.split(',');
 				if(tokens.length == 1 && tokens[0].startsWith('ERROR')) {
 					output.push(tokens);
 					continue
@@ -198,19 +459,22 @@ max(x, y): Maximum of two values</textarea>
 				let stack = [];
 				for(token of tokens) {
 					let num, n1, n2;
-
+					console.log('token ' + token)
 					if(token == '') {
-					} else if(token.match(/[0-9]+/) !== null) { // Number
+					} else if(token.match(/\d+/) !== null) { // Number
 						num = parseInt(token);
 						while(num > 32767) num -= 65536;
 						while(num < -32768) num += 65536;
 						stack.push(num);
 
+					/*} else if(token == '+u' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
+						stack.push(stack.pop());
+
 					} else if(token == '-u' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
 						num = -stack.pop()
 						while(num > 32767) num -= 65536;
 						while(num < -32768) num += 65536;
-						stack.push(num);
+						stack.push(num);*/
 
 					} else if(token == '~' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
 						num = ~stack.pop();
@@ -219,7 +483,8 @@ max(x, y): Maximum of two values</textarea>
 						stack.push(num);
 
 					} else if(token == '!' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
-						stack.push(!stack.pop() ? -1 : 0);
+						num = !stack.pop()
+						stack.push(num ? -1 : 0);
 
 					} else if(token == '*' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						n1 = stack.pop();
@@ -255,6 +520,25 @@ max(x, y): Maximum of two values</textarea>
 
 					} else if(token == '+' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						num = stack.pop() + stack.pop();
+						while(num > 32767) num -= 65536;
+						while(num < -32768) num += 65536;
+						stack.push(num);
+
+					// Unary operators
+					} else if(token == '+' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
+						stack.push(stack.pop());
+
+					} else if(token == '-' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
+						num = -stack.pop()
+						while(num > 32767) num -= 65536;
+						while(num < -32768) num += 65536;
+						stack.push(num);
+
+					} else if(token == '+u' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
+						stack.push(stack.pop());
+
+					} else if(token == '-u' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
+						num = -stack.pop()
 						while(num > 32767) num -= 65536;
 						while(num < -32768) num += 65536;
 						stack.push(num);
@@ -319,13 +603,13 @@ max(x, y): Maximum of two values</textarea>
 						stack.push(stack.pop() | stack.pop());
 
 					} else if(token == '&&' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						stack.push(stack.pop() && stack.pop() ? -1 : 0);
+						stack.push((stack.pop() & stack.pop() != 0) ? -1 : 0);
 
 					} else if(token == '^^' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						stack.push(stack.pop() ^ stack.pop() ? -1 : 0);
+						stack.push((stack.pop() ^ stack.pop() != 0) ? -1 : 0);
 
 					} else if(token == '||' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						stack.push(stack.pop() || stack.pop() ? -1 : 0);
+						stack.push((stack.pop() | stack.pop() != 0) ? -1 : 0);
 
 					} else if(token == 'sq' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
 						num = stack.pop() ** 2;
