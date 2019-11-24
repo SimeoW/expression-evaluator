@@ -17,34 +17,35 @@
 			border: none;
 			color: #fff;
 			font-family: Arial;
-			height: 33%;
+			height: 100%;
 			outline: 0;
-			padding: 30px 50px;
+			padding: 20px 50px;
 			resize: none;
 			width: 100%;
 		}
+		table {
+			width: 100%;
+			height: 100%;
+		}
+		tr {
+			width: 100%;
+			height: 33%;
+		}
+		p {
+			margin: 0;
+		}
 		#infix {
 			background-color: #666;
-		}
-		.helpWrapper {
-			border-top-right-radius: 30px;
-			height: calc(33% - 7px);
-			margin: 0 auto;
-			max-width: 800px;
-			overflow: hidden;
-			padding: 0;
-			pointer-events: none;
-			position: absolute;
 			width: 100%;
+			height: 100%;
 		}
 		#help {
 			background-color: #5d5d5d;
 			color: #fff;
-			float: right;
 			height: 100%;
-			padding: 30px 30px;
+			padding: 20px 10px;
 			pointer-events: default;
-			width: 300px;
+			font-size: 13px;
 		}
 		.rotated {
 			color: #777;
@@ -56,299 +57,53 @@
 		}
 	</style>
 	<div class='wrapper'>
-		<div class='helpWrapper'>
-			<textarea id='help' readonly>Supported operators:
-
-( ) [ ] - + ~ !
-* / % - + <<
->> <<< >>>
-< > <= >= &
-| == != ^ &&
-^^ ||
-
-Supported functions:
-
-sq(x): Square a number
-abs(x): Absolute value of a number
-min(x, y): Minimum of two values
-max(x, y): Maximum of two values</textarea>
-		</div>
 		<p class='rotated'>INFIX</p>
-		<textarea id='infix' oninput='update()'>42
-42 * 42
-42 / 42
-42 % 42
-42 - 42
-42 + 42
-42 << 1
-42 >> 1
-42 <<< 1
-42 >>> 1
-42 < 42
-42 <= 42
-42 > 42
-42 >= 42
-42 == 42
-42 != 42
-42 & 42
-42 ^ 42
-42 | 42
-42 && 42
-42 ^^ 42
-42 || 42
--42
-+42
-~42
-!42
-42 * 0
-42 * 1
-255 * 255
-256 * 256
-257 * 257
-42 / 42
-84 / 2
-42 / 1
-1 / 42
-0 / 42
-41 / 42
-42 / 41
-42 % 42
-84 % 2
-42 % 1
-1 % 42
-0 % 42
-41 % 42
-42 % 41
-42 - 42
-42 - 0
-0 - 42
-32767 + 1
-32767 + 2
-0 << 1
-1 << 0
-1 << 1
-1 << 2
-1 << 3
-1 << 4
-1 << 5
-1 << 6
-1 << 7
-1 << 8
-1 << 10
-1 << 11
-1 << 12
-1 << 13
-1 << 14
-1 << 15
-1 << 16
-1 << 17
-1 << 18
-1 << 20
-0 >> 1
-16384 >> 0
-16384 >> 1
-16384 >> 2
-16384 >> 3
-16384 >> 4
-16384 >> 5
-16384 >> 6
-16384 >> 7
-16384 >> 8
-16384 >> 10
-16384 >> 11
-16384 >> 12
-16384 >> 13
-16384 >> 14
-16384 >> 15
-16384 >> 16
-16384 >> 17
-16384 >> 18
-16384 >> 20
-0 <<< 1
-1 <<< 0
-1 <<< 1
-1 <<< 2
-1 <<< 3
-1 <<< 4
-1 <<< 5
-1 <<< 6
-1 <<< 7
-1 <<< 8
-1 <<< 10
-1 <<< 11
-1 <<< 12
-1 <<< 13
-1 <<< 14
-1 <<< 15
-1 <<< 16
-1 <<< 17
-1 <<< 18
-1 <<< 20
-0 >>> 1
-16384 >>> 0
-16384 >>> 1
-16384 >>> 2
-16384 >>> 3
-16384 >>> 4
-16384 >>> 5
-16384 >>> 6
-16384 >>> 7
-16384 >>> 8
-16384 >>> 10
-16384 >>> 11
-16384 >>> 12
-16384 >>> 13
-16384 >>> 14
-16384 >>> 15
-16384 >>> 16
-16384 >>> 17
-16384 >>> 18
-16384 >>> 20
-42 < 41
-42 < 42
-42 < 43
-42 <= 41
-42 <= 42
-42 <= 43
-42 > 41
-42 > 42
-42 > 43
-42 >= 41
-42 >= 42
-42 >= 43
-0 == 0
-0 == 1
-0 != 0
-0 != 1
-10922 & 21845
-10922 ^ 21845
-10922 | 21845
-10922 && 21845
-10922 ^^ 21845
-10922 || 21845
-0 || 0
-1 || 1
-42 / 6 / 3
-42 % 35 % 5
-42 - 30 - 2
-42 << 1 << 2
-44 >> 1 > 1
-42 <<< 2 <<< 2
-42 >>> 2 >>> 2
-42 < 42 < 42
-42 <= 42 <= 42
-42 > 42 > 42
-42 >= 42 >= 42
-42 == 0 == 0
-42 != 42 == 0
---42
-++42
-~~42
-!!42
-42 / 42 * 7
-42 % 30 / 3
-42 / 30 % 3 
-42 - 21 + 20
-64 << 4 >> 1
-64 >> 4 << 1
-64 <<< 4 >>> 4
-64 >>> 4 <<< 4
-42 < 42 >= 0
-42 == 42 != 0 
-+-42
-~-42
-!-42
--+42
-~+42
-!+42
-+~42
--~42
-!~42
-+!42
--!42
-~!42
-42 - 7 * 5
-42 << 2 + 1
-42 <= 3 >>> 2
-0 == 42 < 43
-42 & 0 != 0
-43 ^ 42 & 42
-42 | 42 ^ 42
-42 && 0 | 42
-43 ^^ 0 && 0
-42 || 42 ^^ 42
-(42 / 6) / 3
-(42 % 35) % 5
-(42 - 30) - 2
-(42 << 1) << 2
-(44 >> 1) > 1
-(42 <<< 2) <<< 2
-(42 >>> 2) >>> 2
-(42 < 42) < 42
-(42 <= 42) <= 42
-(42 > 42) > 42
-(42 >= 42) >= 42
-(42 == 0) == 0
-(42 != 42) == 0
-42 / (6 / 3)
-42 % (35 % 5)
-42 - (30 - 2)
-42 << (1 << 2)
-44 >> (1 > 1)
-42 <<< (2 <<< 2)
-42 >>> (2 >>> 2)
-42 < (42 < 42)
-42 <= (42 <= 42)
-42 > (42 > 42)
-42 >= (42 >= 42)
-42 == (0 == 0)
-42 != (42 == 0)
-(42 - 7) * 5
-(42 << 2) + 1
-(42 <= 3) >>> 2
-(0 == 42) < 43
-(42 & 0) != 0
-(43 ^ 42) & 42
-(42 | 42) ^ 42
-(42 && 0) | 42
-(43 ^^ 0) && 0
-(42 || 42) ^^ 42
-42 - (7 * 5)
-42 << (2 + 1)
-42 <= (3 >>> 2)
-0 == (42 < 43)
-42 & (0 != 0)
-43 ^ (42 & 42)
-42 | (42 ^ 42)
-42 && (0 | 42)
-43 ^^ (0 && 0)
-42 || (42 ^^ 42)
-~0 - 21845
--1 << 1
-170 + 32 * ((((((1 << 1) << 2) + (1 << 1)) << 4) + 10)  
-sq(0)
-sq(16)
-sq(-16)
-abs(0)
-abs(32000)
-abs(-32000)
-min(4, 10)
-min(10, 4)
-min(1000, 1000)
-min(-1000, 1000)
-min(1000, -1000)
-max(4, 10)
-max(10, 4)
-max(1000, 1000)
-max(-1000, 1000)
-max(1000, -1000)
-2 * sq(123 - 234) << 36 % 17
-1 + 2 - 3 / 4 % 5 & max(min(sq(10),sq(100)) - abs(sq(10) - sq(max(abs(-49), 30))), 17)
-</textarea>
-		<p class='rotated'>POSTFIX</p>
-		<textarea id='postfix' readonly></textarea>
-		<p class='rotated'>EVALUATED</p>
-		<textarea id='evaluated' readonly></textarea>
+		<table cellspacing='0' cellpadding='0'>
+			<tr>
+				<td><textarea id='infix' oninput='update()'>(2 * sq(123 - 234) << 36 % 17) + 32503
+-1+2*3/4+5- -6/(7+8)*9 == 14
+-43-(1-2-3-4-5-6-7-8-9) == 0
+-(1+2)*3 == -9
+100%80%7+10/4/5 == 6
+-2--1 == -1
+2*(2+2)*2 == 16
+1<2
+1<=1
+2>1
+1>=1
+1==1
+2!=1
+2^^1
+(1<<1) == 2
+(2>>1) == 1</textarea></td>
+				<td width='280px'>
+					<div id='help'>
+						<p>
+							<hr>Supported operators:<hr>
+							* / % - + <<<br>
+							>> <<< >>><br>
+							< > <= >= &<br>
+							< > <= >= &<br>
+							| == != ^ &&<br>
+							^^ ||
+							<hr>Supported functions:<hr>
+							sq(x): Square a number<br>
+							abs(x): Absolute value of a number<br>
+							min(x, y): Minimum of two values<br>
+							max(x, y): Maximum of two valuese
+						</p>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan='2'><p class='rotated'>POSTFIX</p>
+				<textarea id='postfix' readonly></textarea></td>
+			</tr>
+			<tr>
+				<td colspan='2'><p class='rotated'>EVALUATED</p>
+				<textarea id='evaluated' readonly></textarea></td>
+			</tr>
+		</table>
 	</div>
 	<script>
 		function update() { //11 88 5 123 * / + 10 5 * +
@@ -356,7 +111,7 @@ max(1000, -1000)
 			let postfix = toPostFix(infix);
 			let evaluated = evaluate(postfix);
 
-			document.getElementById('postfix').value = postfix.join('\n');
+			document.getElementById('postfix').value = postfix.join('\n').replace(/-u/g, '-').replace(/\+u/g, '+');
 			document.getElementById('evaluated').value = evaluated;
 		}
 
@@ -383,7 +138,7 @@ max(1000, -1000)
 			let operators = { // [PRECEDENCE, IS_LEFT_ASSOCIATIVE]
 				//'(': [14, true], ')': [14, true], '[': [14, true], ']': [14, true],
 				'sq': [14, true], 'abs': [14, true], 'min': [14, true], 'max': [14, true],
-				'-u': [13, false], '+u': [13, false], '~': [13, false], '!': [13, false],
+				'-u': [13, true], '+u': [13, true], '~': [13, false], '!': [13, false],
 				'*': [12, true], '/': [12, true], '%': [12, true],
 				'-': [11, true], '+': [11, true],
 				'<<': [10, false], '>>': [10, true], '<<<': [10, true], '>>>': [10, true],
@@ -393,7 +148,7 @@ max(1000, -1000)
 				'^': [6, true],
 				'|': [5, true],
 				'&&': [4, true],
-				'^^': [2, false],
+				'^^': [2, true],
 				'||': [1, true],
 			}
 			let output = [];
@@ -459,7 +214,6 @@ max(1000, -1000)
 				let stack = [];
 				for(token of tokens) {
 					let num, n1, n2;
-					console.log('token ' + token)
 					if(token == '') {
 					} else if(token.match(/\d+/) !== null) { // Number
 						num = parseInt(token);
@@ -477,157 +231,175 @@ max(1000, -1000)
 						stack.push(num);*/
 
 					} else if(token == '~' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
-						num = ~stack.pop();
-						while(num > 32767) num -= 65536;
-						while(num < -32768) num += 65536;
+						num = bound(~stack.pop());
 						stack.push(num);
 
 					} else if(token == '!' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
-						num = !stack.pop()
+						num = bound(!stack.pop());
 						stack.push(num ? -1 : 0);
 
 					} else if(token == '*' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						n1 = stack.pop();
 						n2 = stack.pop();
-						num = n2 * n1;
-						while(num > 32767) num -= 65536;
-						while(num < -32768) num += 65536;
+						num = bound(n2 * n1);
 						stack.push(num);
 
 					} else if(token == '/' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						n1 = stack.pop();
 						n2 = stack.pop();
-						num = Math.floor(n2 / n1);
-						while(num > 32767) num -= 65536;
-						while(num < -32768) num += 65536;
+						num = bound(Math.floor(n2 / n1));
 						stack.push(num);
 
 					} else if(token == '%' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						n1 = stack.pop();
 						n2 = stack.pop();
-						num = n2 % n1;
-						while(num > 32767) num -= 65536;
-						while(num < -32768) num += 65536;
+						num = bound(n2 % n1);
 						stack.push(num);
 
 					} else if(token == '-' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						n1 = stack.pop();
 						n2 = stack.pop();
-						num = n2 - n1;
-						while(num > 32767) num -= 65536;
-						while(num < -32768) num += 65536;
+						num = bound(n2 - n1);
 						stack.push(num);
 
 					} else if(token == '+' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						num = stack.pop() + stack.pop();
-						while(num > 32767) num -= 65536;
-						while(num < -32768) num += 65536;
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound(n2 + n1);
 						stack.push(num);
 
 					// Unary operators
 					} else if(token == '+' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
-						stack.push(stack.pop());
+						num = bound(stack.pop());
+						stack.push(num);
 
 					} else if(token == '-' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
-						num = -stack.pop()
-						while(num > 32767) num -= 65536;
-						while(num < -32768) num += 65536;
+						num = bound(-stack.pop());
 						stack.push(num);
 
 					} else if(token == '+u' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
-						stack.push(stack.pop());
+						num = bound(stack.pop());
+						stack.push(num);
 
 					} else if(token == '-u' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
-						num = -stack.pop()
-						while(num > 32767) num -= 65536;
-						while(num < -32768) num += 65536;
+						num = bound(-stack.pop());
 						stack.push(num);
 
 					} else if(token == '<<' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						n1 = stack.pop();
 						n2 = stack.pop();
-						num = n2 << n1;
-						while(num > 32767) num -= 65536;
-						while(num < -32768) num += 65536;
+						num = bound(n2 << n1);
 						stack.push(num);
 
 					} else if(token == '>>' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						n1 = stack.pop();
 						n2 = stack.pop();
-						num = n2 >> n1;
-						while(num > 32767) num -= 65536;
-						while(num < -32768) num += 65536;
+						num = bound(n2 >> n1);
 						stack.push(num);
 
 					} else if(token == '<<<' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						n1 = stack.pop();
 						n2 = stack.pop();
-						num = n2 << n1;
-						while(num > 32767) num -= 65536;
-						while(num < -32768) num += 65536;
+						num = bound(leftRotate(n2, n1));
 						stack.push(num);
 
 					} else if(token == '>>>' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						n1 = stack.pop();
 						n2 = stack.pop();
-						num = n2 >> n1;
-						while(num > 32767) num -= 65536;
-						while(num < -32768) num += 65536;
+						num = bound(rightRotate(n2, n1));
 						stack.push(num);
 
 					} else if(token == '<' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						stack.push(stack.pop() > stack.pop() ? -1 : 0);
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound(n2 < n1 ? -1 : 0);
+						stack.push(num);
 
 					} else if(token == '>' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						stack.push(stack.pop() < stack.pop() ? -1 : 0);
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound(n2 > n1 ? -1 : 0);
+						stack.push(num);
 
 					} else if(token == '<=' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						stack.push(stack.pop() >= stack.pop() ? -1 : 0);
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound(n2 <= n1 ? -1 : 0);
+						stack.push(num);
 
 					} else if(token == '>=' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						stack.push(stack.pop() <= stack.pop() ? -1 : 0);
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound(n2 >= n1 ? -1 : 0);
+						stack.push(num);
 
 					} else if(token == '==' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						stack.push(stack.pop() == stack.pop() ? -1 : 0);
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound(n2 == n1 ? -1 : 0);
+						stack.push(num);
 
 					} else if(token == '!=' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						stack.push(stack.pop() != stack.pop() ? -1 : 0);
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound(n2 != n1 ? -1 : 0);
+						stack.push(num);
 
 					} else if(token == '&' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						stack.push(stack.pop() & stack.pop());
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound(n2 & n1);
+						stack.push(num);
 
 					} else if(token == '^' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						stack.push(stack.pop() ^ stack.pop());
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound(n2 ^ n1);
+						stack.push(num);
 
 					} else if(token == '|' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						stack.push(stack.pop() | stack.pop());
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound(n2 - n1);
+						stack.push(num);
 
 					} else if(token == '&&' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						stack.push((stack.pop() & stack.pop() != 0) ? -1 : 0);
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound((n2 & n1 != 0) ? -1 : 0);
+						stack.push(num);
 
 					} else if(token == '^^' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						stack.push((stack.pop() ^ stack.pop() != 0) ? -1 : 0);
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound((n2 ^ n1 != 0) ? -1 : 0);
+						stack.push(num);
 
 					} else if(token == '||' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						stack.push((stack.pop() | stack.pop() != 0) ? -1 : 0);
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound((n2 | n1 != 0) ? -1 : 0);
+						stack.push(num);
 
 					} else if(token == 'sq' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
-						num = stack.pop() ** 2;
-						while(num > 32767) num -= 65536;
-						while(num < -32768) num += 65536;
+						num = bound(stack.pop() ** 2);
 						stack.push(num);
 
 					} else if(token == 'abs' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
-						num = Math.abs(stack.pop());
-						while(num > 32767) num -= 65536;
-						while(num < -32768) num += 65536;
+						num = bound(Math.abs(stack.pop()));
 						stack.push(num);
 
 					} else if(token == 'min' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						stack.push(Math.min(stack.pop(), stack.pop()));
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound(Math.min(n2, n1));
+						stack.push(num);
 
 					} else if(token == 'max' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						stack.push(Math.max(stack.pop(), stack.pop()));
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound(Math.max(n2, n1));
+						stack.push(num);
 
 					} else if(token == '(') {
 						stack = ['ERROR: missing closing parentheses.'];
@@ -647,6 +419,25 @@ max(1000, -1000)
 				}
 			}
 			return output.join('\n');
+		}
+
+		function bound(num) { // Only allow 16 bit values
+			num = num % 65536;
+			while(num > 32767) num -= 65536;
+			while(num < -32768) num += 65536;
+			return num;
+		}
+
+		function leftRotate(num, amount) { // <<< operator
+			amount = amount % 16;
+			num = (num << amount) | (num >> (16 - amount));
+			return bound(num); 
+		}
+
+		function rightRotate(num, amount) { // >>> operator
+			amount = amount % 16;
+			num = (num >> amount) | (num << (16 - amount));
+			return bound(num);
 		}
 
 		update();
