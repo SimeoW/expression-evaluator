@@ -24,31 +24,32 @@
 			width: 100%;
 		}
 		table {
-			width: 100%;
 			height: 100%;
+			width: 100%;
 		}
 		tr {
-			width: 100%;
 			height: 33%;
+			width: 100%;
 		}
 		p {
 			margin: 0;
 		}
 		#infix {
 			background-color: #666;
-			width: 100%;
 			height: 100%;
+			width: 100%;
 		}
 		#help {
 			background-color: #5d5d5d;
-			color: #fff;
+			color: #ccc;
+			font-size: 13px;
 			height: 100%;
 			padding: 20px 10px;
 			pointer-events: default;
-			font-size: 13px;
 		}
 		.rotated {
 			color: #777;
+			font-size: 19px;
 			margin-left: -25px;
 			margin-top: 150px;
 			position: fixed;
@@ -57,10 +58,10 @@
 		}
 	</style>
 	<div class='wrapper'>
-		<p class='rotated'>INFIX</p>
 		<table cellspacing='0' cellpadding='0'>
 			<tr>
-				<td><textarea id='infix' oninput='update()'>(2 * sq(123 - 234) << 36 % 17) + 32503
+				<td>
+		<p class='rotated'>INFIX</p><textarea id='infix' oninput='update()'>(2 * sq(123 - 234) << 36 % 17) + 32503
 -1+2*3/4+5- -6/(7+8)*9 == 14
 -43-(1-2-3-4-5-6-7-8-9) == 0
 -(1+2)*3 == -9
@@ -76,12 +77,12 @@
 2^^1
 (1<<1) == 2
 (2>>1) == 1</textarea></td>
-				<td width='280px'>
+				<td width='250px'>
 					<div id='help'>
 						<p>
 							<hr>Supported operators:<hr>
-							* / % - + ^ << >> <<< >>><br>
-							& | < > <= >= == != && ^^ ||<br>
+							+ - * / % ^ & | << >> <<< >>><br>
+							< > <= >= == != && ^^ ||<br><br>
 							<hr>Supported functions:<hr>
 							sq(x): Square a number<br>
 							abs(x): Absolute value of a number<br>
@@ -100,6 +101,7 @@
 				<textarea id='evaluated' readonly></textarea></td>
 			</tr>
 		</table>
+		<!-- by Simeon Wuthier -->
 	</div>
 	<script>
 		function update() { //11 88 5 123 * / + 10 5 * +
@@ -212,19 +214,8 @@
 					let num, n1, n2;
 					if(token == '') {
 					} else if(token.match(/\d+/) !== null) { // Number
-						num = parseInt(token);
-						while(num > 32767) num -= 65536;
-						while(num < -32768) num += 65536;
+						num = bound(parseInt(token));
 						stack.push(num);
-
-					/*} else if(token == '+u' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
-						stack.push(stack.pop());
-
-					} else if(token == '-u' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
-						num = -stack.pop()
-						while(num > 32767) num -= 65536;
-						while(num < -32768) num += 65536;
-						stack.push(num);*/
 
 					} else if(token == '~' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
 						num = bound(~stack.pop());
