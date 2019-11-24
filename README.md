@@ -6,4 +6,4 @@ Each line represents a new expression, allowing this application to be used for 
 
 ![](screenshot.png)
 
-#### This application is hosted at (http://simewu.com/expression-evaluator)[http://simewu.com/expression-evaluator]
+#### This application is hosted at http://simewu.com/expression-evaluator
