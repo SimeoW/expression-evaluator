@@ -153,10 +153,10 @@
 						token += 'u';
 					}
 				}
-				if(token == ',' && prevToken == ',') {
-					return ['ERROR: unexpected comma.'];
+				if((prevToken == ',' || prevToken == '(' || prevToken == '[') && (token == ',' || token == ')' || token == ']')) {
+					return ['ERROR: tokens "' + prevToken + token + '" not allowed.'];
 				}
-				if((prevToken == ')' || prevToken == ']') && (token == '(' || token == '[')) {
+				if(prevToken !== undefined && (prevToken.match(/[0-9]+/) !== null || prevToken == ')' || prevToken == ']') && (token == '(' || token == '[')) {
 					return ['ERROR: tokens "' + prevToken + token + '" not allowed.'];
 				}
 				prevToken = token;
@@ -205,7 +205,7 @@
 					stack.push(token); // ,
 				}
 			}
-			while(stack.length > 0) {
+			while(stack.length > 0) { // Remove any remaining tokens
 				output.push(stack.pop());
 			}
 			if(output.includes(',')) {
@@ -218,7 +218,7 @@
 			let output = [];
 			for(line of lines) {
 				tokens = line.split(',');
-				if(tokens.length == 1 && tokens[0].startsWith('ERROR')) {
+				if(line.startsWith('ERROR')) {
 					output.push(tokens);
 					continue
 				}
@@ -226,8 +226,17 @@
 				for(token of tokens) {
 					let num, n1, n2;
 					if(token == '') {
-					} else if(token.match(/\d+/) !== null) { // Number
+					} else if(token.match(/\d+/) !== null) { // Integers
 						num = bound(parseInt(token));
+						stack.push(num);
+
+					// Unary operators
+					} else if(token == '+u' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
+						num = bound(stack.pop());
+						stack.push(num);
+
+					} else if(token == '-u' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
+						num = bound(-stack.pop());
 						stack.push(num);
 
 					} else if(token == '~' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
@@ -238,6 +247,7 @@
 						num = bound(!stack.pop());
 						stack.push(num ? -1 : 0);
 
+					// Binary operators
 					} else if(token == '*' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						n1 = stack.pop();
 						n2 = stack.pop();
@@ -264,33 +274,16 @@
 						num = bound(n2 % n1);
 						stack.push(num);
 
-					} else if(token == '-' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						n1 = stack.pop();
-						n2 = stack.pop();
-						num = bound(n2 - n1);
-						stack.push(num);
-
 					} else if(token == '+' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						n1 = stack.pop();
 						n2 = stack.pop();
 						num = bound(n2 + n1);
 						stack.push(num);
 
-					// Unary operators
-					} else if(token == '+' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
-						num = bound(stack.pop());
-						stack.push(num);
-
-					} else if(token == '-' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
-						num = bound(-stack.pop());
-						stack.push(num);
-
-					} else if(token == '+u' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
-						num = bound(stack.pop());
-						stack.push(num);
-
-					} else if(token == '-u' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
-						num = bound(-stack.pop());
+					} else if(token == '-' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound(n2 - n1);
 						stack.push(num);
 
 					} else if(token == '<<' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
@@ -315,6 +308,24 @@
 						n1 = stack.pop();
 						n2 = stack.pop();
 						num = bound(rightRotate(n2, n1));
+						stack.push(num);
+
+					} else if(token == '&' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound(n2 & n1);
+						stack.push(num);
+
+					} else if(token == '^' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound(n2 ^ n1);
+						stack.push(num);
+
+					} else if(token == '|' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
+						n1 = stack.pop();
+						n2 = stack.pop();
+						num = bound(n2 - n1);
 						stack.push(num);
 
 					} else if(token == '<' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
@@ -353,40 +364,22 @@
 						num = bound(n2 != n1 ? -1 : 0);
 						stack.push(num);
 
-					} else if(token == '&' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						n1 = stack.pop();
-						n2 = stack.pop();
-						num = bound(n2 & n1);
-						stack.push(num);
-
-					} else if(token == '^' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						n1 = stack.pop();
-						n2 = stack.pop();
-						num = bound(n2 ^ n1);
-						stack.push(num);
-
-					} else if(token == '|' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
-						n1 = stack.pop();
-						n2 = stack.pop();
-						num = bound(n2 - n1);
-						stack.push(num);
-
 					} else if(token == '&&' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						n1 = stack.pop();
 						n2 = stack.pop();
-						num = bound((n2 & n1 != 0) ? -1 : 0);
+						num = bound((n2 && n1) ? -1 : 0);
 						stack.push(num);
 
 					} else if(token == '^^' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						n1 = stack.pop();
 						n2 = stack.pop();
-						num = bound((n2 ^ n1 != 0) ? -1 : 0);
+						num = bound(((n2 ^ n1) != 0) ? -1 : 0);
 						stack.push(num);
 
 					} else if(token == '||' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						n1 = stack.pop();
 						n2 = stack.pop();
-						num = bound((n2 | n1 != 0) ? -1 : 0);
+						num = bound((n2 || n1) ? -1 : 0);
 						stack.push(num);
 
 					} else if(token == 'sq' && stack.length >= 1 && typeof stack[stack.length - 1] == 'number') {
