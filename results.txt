@@ -165,8 +165,8 @@
 0
 -1
 -1
-ERROR: token "-u" has incorrect number of operands.
-ERROR: token "+u" has incorrect number of operands.
+42
+42
 42
 -1
 7
@@ -182,14 +182,14 @@ ERROR: token "+u" has incorrect number of operands.
 -42
 41
 0
-ERROR: token "-u" has incorrect number of operands.
+-42
 -43
 0
-ERROR: token "+u" has incorrect number of operands.
-ERROR: token "-u" has incorrect number of operands.
+-43
+43
 0
-ERROR: token "+u" has incorrect number of operands.
-ERROR: token "-u" has incorrect number of operands.
+0
+0
 -1
 7
 336
@@ -215,7 +215,7 @@ ERROR: token "-u" has incorrect number of operands.
 -1
 -1
 21
-NaN
+ERROR: division by zero.
 14
 672
 44
@@ -247,7 +247,7 @@ NaN
 0
 -1
 -1
-21844
+-21846
 -2
 ERROR: missing closing parentheses.
 0

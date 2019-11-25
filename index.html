@@ -104,12 +104,12 @@
 		<!-- by Simeon Wuthier -->
 	</div>
 	<script>
-		function update() { //11 88 5 123 * / + 10 5 * +
+		function update() {
 			let infix = document.getElementById('infix').value;
 			let postfix = toPostFix(infix);
 			let evaluated = evaluate(postfix);
 
-			document.getElementById('postfix').value = postfix.join('\n').replace(/-u/g, '-').replace(/\+u/g, '+');
+			document.getElementById('postfix').value = postfix.join('\n');
 			document.getElementById('evaluated').value = evaluated;
 		}
 
@@ -117,10 +117,6 @@
 			let lines = infix.split('\n')
 			let output = [], tokens = [];
 			for(line of lines) {
-				line = line.replace(/(^|[^0-9A-z\)\]\s]\s*)\-(?!u)/g, '$1-u');
-				line = line.replace(/(^|[^0-9A-z\)\]\s]\s*)\+(?!u)/g, '$1+u');
-				line = line.replace(/(^|[^0-9A-z\)\]\s]\s*)\-(?!u)/g, '$1-u');
-				line = line.replace(/(^|[^0-9A-z\)\]\s]\s*)\+(?!u)/g, '$1+u');
 				tokens = line.match(/[0-9]+|\-u|\+u|sq|abs|min|max|,|<<<|>>>|==|!=|&&|\^\^|\|\||<<|>>|\<=|\>=|\<|\>|\(|\)|\[|\]|\-|\+|\~|\!|\*|\/|\%|\&|\||\^/g) || [];
 				if(tokens.join('').length != line.replace(/\s/g, '').length) {
 					tokens = ['ERROR: unknown token was found.'];
@@ -131,12 +127,11 @@
 			return output;
 		}
 
-		function shuntingYard(tokens) { // 2,123,234, –,sq,*,36,17,%,<< 
+		function shuntingYard(tokens) {
 			if(tokens.length == 1 && tokens[0].startsWith('ERROR')) return tokens;
 			let operators = { // [PRECEDENCE, IS_LEFT_ASSOCIATIVE]
 				//'(': [14, true], ')': [14, true], '[': [14, true], ']': [14, true],
-				'sq': [14, true], 'abs': [14, true], 'min': [14, true], 'max': [14, true],
-				'-u': [13, true], '+u': [13, true], '~': [13, false], '!': [13, false],
+				'-u': [13, false], '+u': [13, false], '~': [13, false], '!': [13, false],
 				'*': [12, true], '/': [12, true], '%': [12, true],
 				'-': [11, true], '+': [11, true],
 				'<<': [10, false], '>>': [10, true], '<<<': [10, true], '>>>': [10, true],
@@ -151,16 +146,31 @@
 			}
 			let output = [];
 			let stack = [];
+			let prevToken = undefined;
 			for(token of tokens) {
+				if(token == '+' || token == '-') {
+					if(prevToken === undefined || operators[prevToken] !== undefined || prevToken == '(' || prevToken == '[' || prevToken == ',') {
+						token += 'u';
+					}
+				}
+				if(token == ',' && prevToken == ',') {
+					return ['ERROR: unexpected comma.'];
+				}
+				if((prevToken == ')' || prevToken == ']') && (token == '(' || token == '[')) {
+					return ['ERROR: tokens "' + prevToken + token + '" not allowed.'];
+				}
+				prevToken = token;
+
 				if(token.match(/[0-9]+/) !== null) { // Number
 					output.push(token);
 				} else if(token.match(/[A-z]+/) !== null && !'[]'.includes(token)) { // Function
 					stack.push(token);
-				} else if(operators[token] !== undefined) { // Operator
+				} else if(operators[token] !== undefined) { // Operator/runction
 					let top = stack[stack.length - 1];
-					while(operators[top] !== undefined && (
-						(operators[top][1] == true && operators[token][0] <= operators[top][0]) ||
-						(operators[token][1] == false && operators[token][0] < operators[top][0]))) {
+					while(['sq', 'abs', 'min', 'max'].includes(top) ||
+						(operators[top] !== undefined && (
+						(operators[top][0] > operators[token][0]) ||
+						(operators[top][0] == operators[token][0] && operators[top][1] == true)))) {
 						output.push(stack.pop());
 						top = stack[stack.length - 1];
 					}
@@ -171,7 +181,9 @@
 					stack.push(token);
 				} else if(token == ')') {
 					while(stack.length > 0 && stack[stack.length - 1] != '(') {
-						output.push(stack.pop());
+						let top = stack.pop();
+						if(top == ',') continue; // Remove commas inside parentheses
+						output.push(top);
 					}
 					if(stack.length == 0) {
 						output = [];
@@ -189,14 +201,15 @@
 						break;
 					}
 					stack.pop(); // Pop [
+				} else {
+					stack.push(token); // ,
 				}
 			}
-			/*for(i in stack) { // Convert from unary back to the original + and -
-				if(stack[i] == '+u') stack[i] = '+';
-				if(stack[i] == '-u') stack[i] = '-';
-			}*/
 			while(stack.length > 0) {
 				output.push(stack.pop());
+			}
+			if(output.includes(',')) {
+				output = ['ERROR: unexpected comma.'];
 			}
 			return output;
 		}
@@ -234,12 +247,20 @@
 					} else if(token == '/' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						n1 = stack.pop();
 						n2 = stack.pop();
+						if(n1 == 0) {
+							stack = ['ERROR: division by zero.'];
+							break;
+						}
 						num = bound(Math.floor(n2 / n1));
 						stack.push(num);
 
 					} else if(token == '%' && stack.length >= 2 && typeof stack[stack.length - 1] == 'number' && typeof stack[stack.length - 2] == 'number') {
 						n1 = stack.pop();
 						n2 = stack.pop();
+						if(n1 == 0) {
+							stack = ['ERROR: division by zero.'];
+							break;
+						}
 						num = bound(n2 % n1);
 						stack.push(num);
 
